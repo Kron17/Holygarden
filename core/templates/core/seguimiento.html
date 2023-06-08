@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock %}
+{% block contenido %}
+<body>
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Seguimiento de compra</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="{% url 'index' %}">Home</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Seguimiento de compra</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Contact Start -->
+    <div class="container-xxl py-6">
+        <div class="container">
+            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-5 mb-3">Seguimiento de compra</h1>
+                <p>Con tu codigo de compra puedes buscar donde se encuentra tu producto en todo momento.</p>
+            </div>
+            <div class="row g-5 justify-content-center">
+                <div class="col-lg-5 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="bg-primary text-white d-flex flex-column justify-content-center h-100 p-5">
+                        <h5 class="text-white">LLamanos</h5>
+                        <p class="mb-5"><i class="fa fa-phone-alt me-3"></i>+56 912345678</p>
+                        <h5 class="text-white">Nuestro email</h5>
+                        <p class="mb-5"><i class="fa fa-envelope me-3"></i>holygarden@holy.com</p>
+                        <h5 class="text-white">Dirección</h5>
+                        <p class="mb-5"><i class="fa fa-map-marker-alt me-3"></i>Padre Mariano 350, Providencia</p>
+                        <h5 class="text-white">Siguenos en</h5>
+                        <div class="d-flex pt-2">
+                            <a class="btn btn-square btn-outline-light rounded-circle me-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-square btn-outline-light rounded-circle me-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-square btn-outline-light rounded-circle me-1" href=""><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-square btn-outline-light rounded-circle me-0" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
+                    <p class="mb-4">Escribe tu codigo de compra aquí y busca en donde se encuentra tu producto. Ante cualquier cosa puedes contactanos por cualquier medio de comunicación indicado en el costado izquierdo.</p>
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="name" placeholder="Your Name">
+                                    <label for="name">Código de compra</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <a href="{% url 'seguimientoCompra' %}" class="btn btn-primary rounded-pill py-3 px-5">Buscar pedido</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Contact End -->
+
+</body>
+
+
+
+{% endblock %}
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

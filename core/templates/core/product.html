@@ -1,0 +1,154 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock %}
+{% block contenido %}
+
+<body>
+    
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Productos</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="{% url 'index' %}">Home</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Productos</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Si se registra un usuario y este tiene permisos de superusuario, podra agregar productos -->
+    {% if user.is_authenticated %}
+        {% if user.is_superuser %}
+            <div class="text-md-end p-4">
+                <h3>
+                    <a class="text-body" href="{% url 'add' %}" ><i class="fas fa-cog text-primary me-2"></i>Agregar productos</a>
+                </h3>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- Product Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-0 gx-5 align-items-end">
+                <div class="col-lg-6">
+                    <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                        <h1 class="display-5 mb-3">Nuestros productos</h1>
+                        <p>Estos son nuestros, productos de gran calidad para tod@s l@s amanes de las plantas y de sus cuidados.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane fade show p-0 active">
+                    <div class="row g-4">
+                        {% for aux in listado %}
+                            <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="product-item">
+                                    <div class="position-relative bg-light overflow-hidden">
+                                        {% if aux.imagen %}
+                                            <img class="img-fluid w-100" src="{{ aux.imagen }}" alt="">
+                                        {% else %}
+                                            <img class="img-fluid w-100" src="{% static 'core/img/plantando.png' %}" alt="">
+                                        {% endif %}
+                                        {% if aux.stock >= 1 %}
+                                            {% if aux.stock <= 10 %}
+                                                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">Ultimas Unidades</div>
+                                            {% else %}
+                                                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">Nuevo</div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="bg-danger rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">Agotado</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-center p-4">
+                                        <a class="d-block h5 mb-2" href="">{{ aux.nombre }}</a>
+                                        <span class="text-primary me-1">${{ aux.precio }}</span>
+                                    </div>
+                                    {% if aux.stock >= 1 %}
+                                        <div class="text-center">
+                                            <h6 class="text-primary me-1"> Stock disponible: {{ aux.stock }} </h6>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center">
+                                            <h6 class="text-danger me-1"> Sin stock: {{ aux.stock }} </h6>
+                                        </div>
+                                    {% endif %}
+                                    {% if user.is_authenticated %}
+                                        {% if user.is_superuser %}
+                                            <div class="d-flex border-top">
+                                                <small class="w-50 text-center border-end py-2">
+                                                    <a class="text-body" href="#" onclick="deleteProducto({{ aux.id }})"><i class="fa fa-trash text-primary me-2"></i> Eliminar</a>
+                                                </small>
+                                                <small class="w-50 text-center border-end py-2">
+                                                    <a class="text-body" href="{% url 'update' aux.id %}"><i class="fas fa-edit text-primary me-2"></i>Actualizar</a>
+                                                </small>
+                                            </div>
+                                        {% else %}
+                                            <div class="border-top" style="text-align: center;">
+                                                <small class="w-50 text-center py-2">
+                                                    {% if aux.stock >= 1 %}
+                                                        <form action="" method="POST">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="NombreProducto" id="NombreProducto" value="{{ aux.nombre }}" >
+                                                            <input type="hidden" name="PrecioProducto" id="PrecioProducto" value="{{ aux.precio }}" >
+                                                            <input type="hidden" name="imagenProducto" id="imagenProducto" value="{{ aux.imagen }}" >
+        
+                                                            <button type="submit" style="cursor: pointer;" class="btn btn-success btn-sm ml-auto">
+                                                                <span class="fa fa-shopping-bag text-primary me-2"></span>Agregar
+                                                            </button>
+                                                            
+                                                        </form>
+                                                    {% else %}
+                                                        <a class="btn btn-danger btn-sm ml-auto">
+                                                            <span class="fa fa-shopping-bag text-primary me-2"></span>Agregar
+                                                        </a>
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="border-top" style="text-align: center;">
+                                            <small class="w-50 text-center py-2">
+                                                {% if aux.stock >= 1 %}
+                                                    <form action="" method="POST">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="NombreProducto" id="NombreProducto" value="{{ aux.nombre }}" >
+                                                        <input type="hidden" name="PrecioProducto" id="PrecioProducto" value="{{ aux.precio }}" >
+                                                        <input type="hidden" name="imagenProducto" id="imagenProducto" value="{{ aux.imagen }}" >
+
+                                                        <button type="submit" style="cursor: pointer;" class="btn btn-success btn-sm ml-auto">
+                                                            <span class="fa fa-shopping-bag text-primary me-2"></span>Agregar
+                                                        </button>
+                                                        
+                                                    </form>
+                                                {% else %}
+                                                        <a class="btn btn-danger btn-sm ml-auto">
+                                                            <span class="fa fa-shopping-bag text-primary me-2"></span>Agregar
+                                                        </a>
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% include 'core/paginator.html' %}
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+    <!-- Product End -->
+    
+
+</body>
+{% endblock %}
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/mensaje.js' %}"></script>
+{% endblock %}
