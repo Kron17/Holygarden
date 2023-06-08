@@ -94,7 +94,7 @@ DATABASES = {
 DATABASES = {
     'default' : {
         'ENGINE' : 'django.db.backends.mysql',
-        'NAME' : 'holygarden',
+        'NAME' : 'holyard',
         'HOST' : 'localhost',
         'PORT' : '3306',
         'USER' : 'root',
