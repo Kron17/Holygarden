@@ -5,10 +5,24 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .serializers import *
 from rest_framework import viewsets
 import requests
+
+#FUNCION GENERICA QUE VALIDA EL GRUPO DE USUARIO
+def grupo_requerido(nombre_grupo):
+    def decorator(view_fuc):
+        @user_passes_test(lambda user: user.groups.filter(name=nombre_grupo).exists())
+        def wrapper(request, *arg, **kwargs):
+            return view_fuc(request, *arg, **kwargs)
+        return wrapper
+    return decorator
+
+# @grupo_requerido('vendedores')
+# CUANDO CREAN EL USUARIO LO ASIGNA INMEDIATAMENTE AL GRUPO
+# grupo = Group.objects.get(name='cliente')
+# user.groups.add(grupo)
 
 #NOS PERMITE MOSTRAR LA INFO
 class ProductoViewset(viewsets.ModelViewSet):
@@ -25,6 +39,8 @@ class TipoProductoViewset(viewsets.ModelViewSet):
 def index(request):
     productosAll = Producto.objects.all() #SELECT * FROM producto
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
+
+    respuesta = requests.get('https://mindicador.cl/api').json()
     
     try:
         paginator = Paginator(productosAll, 4)
@@ -34,7 +50,8 @@ def index(request):
 
     data = {
         'listado': productosAll,
-        'paginator': paginator
+        'paginator': paginator,
+        'monedas': respuesta
     }
 
     if request.method == 'POST':
@@ -48,9 +65,6 @@ def index(request):
 
 def base(request):
     respuesta = requests.get('https://mindicador.cl/api').json()
-
-  
-    
     
     data = {
         'monedas': respuesta,
@@ -63,6 +77,7 @@ def product(request):
     productos = respuesta.json()
     #productosAll = Producto.objects.all() #SELECT * FROM producto
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
+    respuesta = requests.get('https://mindicador.cl/api').json()
     
     try:
         paginator = Paginator(productos, 8)
@@ -72,7 +87,8 @@ def product(request):
 
     data = {
         'listado': productos,
-        'paginator': paginator
+        'paginator': paginator,
+        'monedas': respuesta
     }
     
     if request.method == 'POST':
@@ -86,13 +102,25 @@ def product(request):
 
 @login_required
 def seguimiento(request):
-    return render(request, 'core/seguimiento.html')
+    respuesta = requests.get('https://mindicador.cl/api').json()
+    data = {
+        'monedas': respuesta
+    }
+    return render(request, 'core/seguimiento.html', data)
 
 def seguimientoCompra(request):
-    return render(request, 'core/seguimientoCompra.html')
+    respuesta = requests.get('https://mindicador.cl/api').json()
+    data = {
+        'monedas': respuesta
+    }
+    return render(request, 'core/seguimientoCompra.html', data)
 
 def contacto(request):
-    return render(request, 'core/contacto.html')
+    respuesta = requests.get('https://mindicador.cl/api').json()
+    data = {
+        'monedas': respuesta
+    }
+    return render(request, 'core/contacto.html', data)
 
 ##def usuario(request):
     ##return render(request, 'registration/usuario.html')
@@ -106,10 +134,16 @@ def registro(request):
             return redirect('index')  # Redirige a la página de inicio después del registro exitoso
     else:
         form = UserCreationForm()
-    return render(request, 'registro.html', {'form': form})
+    
+    respuesta = requests.get('https://mindicador.cl/api').json()
+    data = {
+        'monedas': respuesta
+    }
+    return render(request, 'registro.html', {'form': form}, data)
 
 @login_required
 def compra(request):
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     respuesta = requests.get('https://mindicador.cl/api/dolar').json()
     valor_usd = respuesta['serie'][0]['valor']
     carrito = ItemsCarrito.objects.all()
@@ -130,7 +164,8 @@ def compra(request):
         'total_price_without_discount': total_price_without_discount,
         'valor_total': round(valor_total,2),
         'discount_amount': discount_amount,
-        'total_price_with_discount': total_price_with_discount
+        'total_price_with_discount': total_price_with_discount,
+        'monedas': apiMonedas
     }
 
     return render(request, 'core/compra.html', datos)
@@ -145,8 +180,11 @@ def aprobado(request):
 ######################## CRUD ########################
 @login_required
 def add(request):
+    respuesta = requests.get('https://mindicador.cl/api').json()
+
     data ={
-        'form' : ProductoForm()
+        'form' : ProductoForm(),
+        'monedas': respuesta
     }
 
     if request.method == 'POST':
@@ -160,9 +198,11 @@ def add(request):
 
 @login_required
 def update(request, id):
+    respuesta = requests.get('https://mindicador.cl/api').json()
     producto = Producto.objects.get(id=id) #OBTIENE UN PRODUCTO POR EL ID
     data ={
-        'form' : ProductoForm(instance=producto) #CARGAMOS EL PRODUCTO EN EL FORMULARIO
+        'form' : ProductoForm(instance=producto), #CARGAMOS EL PRODUCTO EN EL FORMULARIO
+        'monedas': respuesta
     }
 
     if request.method == 'POST':
@@ -182,6 +222,7 @@ def delete(request, id):
     
     return redirect(to = 'index')
 
+@grupo_requerido('vendedores')
 def indexapi(request):
     #obtiene productos api
     respuesta = requests.get('http://127.0.0.1:8000/api/productos/')

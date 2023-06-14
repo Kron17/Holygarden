@@ -64,12 +64,12 @@
             </div>
             {% else %}
             <div class="col-lg-6 px-5 text-start">
-                <small class="ms-4"><i class="fa fa-envelope me-2"></i>UF{{ monedas.uf.valor }} - DOLAR {{ monedas.dolar.valor }} - EURO {{ monedas.euro.valor }}</small>
                 <small><i class="fa fa-map-marker-alt me-2"></i>Padre Mariano 350, Providencia</small>
                 <small class="ms-4"><i class="fa fa-envelope me-2"></i>holygarden@holy.com</small>
             </div>
             {% endif %}
             <div class="col-lg-6 px-5 text-end">
+                <small class="ms-4"><i class="fas fa-dollar-sign me-2"></i>UF {{ monedas.uf.valor }} - DOLAR {{ monedas.dolar.valor }} - EURO {{ monedas.euro.valor }}</small>
                 <small>Siguenos:</small>
                 <a class="text-body ms-3" href=""><i class="fab fa-facebook-f"></i></a>
                 <a class="text-body ms-3" href=""><i class="fab fa-twitter"></i></a>
@@ -80,7 +80,6 @@
 
         <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
             <a href="{% url 'index' %}" class="navbar-brand ms-4 ms-lg-0">
-                <h6>UF{{ monedas.uf.valor }} - DOLAR {{ monedas.dolar.valor }} - EURO {{ monedas.euro.valor }}</h6>
                 <h1 class="fw-bold text-primary m-0">Hol<span class="text-secondary">Ya</span>rd</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse"
