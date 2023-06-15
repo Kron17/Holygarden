@@ -40,7 +40,7 @@ def index(request):
     productosAll = Producto.objects.all() #SELECT * FROM producto
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
 
-    respuesta = requests.get('https://mindicador.cl/api').json()
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     
     try:
         paginator = Paginator(productosAll, 4)
@@ -51,7 +51,7 @@ def index(request):
     data = {
         'listado': productosAll,
         'paginator': paginator,
-        'monedas': respuesta
+        'monedas': apiMonedas
     }
 
     if request.method == 'POST':
@@ -64,10 +64,10 @@ def index(request):
     return render(request, 'core/index.html', data)
 
 def base(request):
-    respuesta = requests.get('https://mindicador.cl/api').json()
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     
     data = {
-        'monedas': respuesta,
+        'monedas': apiMonedas,
          }
     
     return render(request, 'core/base.html', data)
@@ -77,7 +77,7 @@ def product(request):
     productos = respuesta.json()
     #productosAll = Producto.objects.all() #SELECT * FROM producto
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
-    respuesta = requests.get('https://mindicador.cl/api').json()
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     
     try:
         paginator = Paginator(productos, 8)
@@ -88,7 +88,7 @@ def product(request):
     data = {
         'listado': productos,
         'paginator': paginator,
-        'monedas': respuesta
+        'monedas': apiMonedas
     }
     
     if request.method == 'POST':
@@ -102,44 +102,33 @@ def product(request):
 
 @login_required
 def seguimiento(request):
-    respuesta = requests.get('https://mindicador.cl/api').json()
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     data = {
-        'monedas': respuesta
+        'monedas': apiMonedas
     }
     return render(request, 'core/seguimiento.html', data)
 
 def seguimientoCompra(request):
-    respuesta = requests.get('https://mindicador.cl/api').json()
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     data = {
-        'monedas': respuesta
+        'monedas': apiMonedas
     }
     return render(request, 'core/seguimientoCompra.html', data)
 
 def contacto(request):
-    respuesta = requests.get('https://mindicador.cl/api').json()
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     data = {
-        'monedas': respuesta
+        'monedas': apiMonedas
     }
     return render(request, 'core/contacto.html', data)
 
-##def usuario(request):
-    ##return render(request, 'registration/usuario.html')
 
 def registro(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('index')  # Redirige a la página de inicio después del registro exitoso
-    else:
-        form = UserCreationForm()
-    
-    respuesta = requests.get('https://mindicador.cl/api').json()
+    apiMonedas = requests.get('https://mindicador.cl/api').json()
     data = {
-        'monedas': respuesta
+        'monedas': apiMonedas
     }
-    return render(request, 'registro.html', {'form': form}, data)
+    return render(request, 'registration/registro.html', data)
 
 @login_required
 def compra(request):
@@ -176,6 +165,7 @@ def aprobado(request):
     carrito.delete()
 
     return render(request, 'core/aprobado.html')
+
 
 ######################## CRUD ########################
 @login_required
