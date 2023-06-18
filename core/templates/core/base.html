@@ -56,11 +56,7 @@
             <div class="col-lg-6 px-5 text-start">
                 <small><i class="fa fa-map-marker-alt me-2"></i>Padre Mariano 350, Providencia</small>
                 <small class="ms-4"><i class="fa fa-envelope me-2"></i>holygarden@holy.com</small>
-                {% if user.is_superuser %}
-                <small class="ms-4"><i class="fa fa-user-plus me-2"></i>Bienvenido Admin</small>
-                {% else %}
-                <small class="ms-4"><i class="fa fa-user me-2"></i>Bienvenido Usuario</small>
-                {% endif %}
+                <small class="ms-4"><i class="fa fa-user-plus me-2"></i>Bienvenido {{ user.username }}</small>
             </div>
             {% else %}
             <div class="col-lg-6 px-5 text-start">

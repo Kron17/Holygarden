@@ -127,7 +127,7 @@ def registro(request):
     apiMonedas = requests.get('https://mindicador.cl/api').json()
     data = {
         'monedas': apiMonedas,
-        'form' : UserCreationForm()
+        'form' : CustomUserCreationForm()
     }
 
     if request.method =='POST':
@@ -137,6 +137,7 @@ def registro(request):
             user = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password1"])
             login(request, user)
             messages.success(request, "Te has registrado correctamente")
+            return redirect(to="index")
         data["from"] = formulario
 
     return render(request, 'registration/registro.html', data)
