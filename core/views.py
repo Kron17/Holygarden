@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import Group
 from .serializers import *
 from rest_framework import viewsets
 import requests
@@ -122,7 +123,7 @@ def contacto(request):
     }
     return render(request, 'core/contacto.html', data)
 
-
+#CREACIÓN DE USUARIO
 def registro(request):
     apiMonedas = requests.get('https://mindicador.cl/api').json()
     data = {
@@ -135,6 +136,8 @@ def registro(request):
         if formulario.is_valid():
             formulario.save()
             user = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password1"])
+            grupo = Group.objects.get(name='clientes')
+            user.groups.add(grupo)
             login(request, user)
             messages.success(request, "Te has registrado correctamente")
             return redirect(to="index")
